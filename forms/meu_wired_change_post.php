@@ -17,28 +17,59 @@
 	$response = json_decode($response, true);
 	if($response["success"] === true){*/
 		
-		$acao = $_POST['meu_shop'];
+		$tarefa = $_POST['nm_tarefa'];
+		$acao = $_POST['nm_shop'];
 		$data = date('Y-m-d H:i:s', strtotime("-5 hours"));
-		$wired = $_POST['meu_wired'];
+		if(isset($_POST['nm_wired'])){
+			$wired = $_POST['nm_wired'];
+		}
 		$user = $_SESSION['nick_logado'];
-		$price = $_POST['meu_price'];
-		$qtd = $_POST['meu_qtd'];
-		$room = $_POST['meu_room'];
+		$price = $_POST['nm_price'];
+		$qtd = $_POST['nm_qtd'];
+		$room = $_POST['nm_room'];
 		
-		
+		if($tarefa == "add"){
 			$iten = "INSERT INTO db_meu_wired (meu_wired_acao, meu_wired_data, meu_wired_name, meu_wired_user, meu_wired_price, meu_wired_qtd, meu_wired_room) VALUES ('{$acao}', '{$data}', '{$wired}', '{$user}', '{$price}', '{$qtd}', '{$room}')";
 			
 		
 			if ($conn->query($iten) === TRUE) {
-				$iten2 = "SELECT * FROM db_meu_wired WHERE meu_wired_data = '{$data}' AND meu_wired_user = '{$user}' AND meu_wired_name = '{$wired}'";
-				$result2 = $conn->query($iten2);
-				$linha2 = $result2->fetch_assoc();
-				header("location: ../includes/meu-wired_search.php?nm_search=".$linha2['meu_wired_id']);
-				
+				header("location: ../painel?change=meu_wired");
 			} else {
 				echo "Ocorreu um erro inesperado: '".$conn->error."'. Tente novamente:";
 			}
+		} elseif ($tarefa == "mod") {
+			$id = $_POST['nm_id'];
+			$iten = "";
+			$verifica = "SELECT * FROM db_meu_wired WHERE meu_wired_id = '{$id}' AND meu_wired_user = '{$user}'";
+			$verifica_result = $conn->query($verifica);
+			if($verifica_result->num_rows > 0) {
+				$iten = "UPDATE db_meu_wired SET ";
+				if($acao != "") {
+					$iten .= "meu_wired_acao = '{$acao}', ";
+				}
+				if($wired != "") {
+					$iten .= "meu_wired_name = '{$wired}', ";
+				}
+				if($price != "") {
+					$iten .= "meu_wired_price = '{$price}', ";
+				}
+				if($qtd != "") {
+					$iten .= "meu_wired_qtd = '{$qtd}', ";
+				}
+				if($room != "") {
+					$iten .= "meu_wired_room = '{$room}', ";
+				}
+				$iten .= "meu_wired_data = '{$data} WHERE meu_wired_id = '{$id}''";
 		
+				if ($conn->query($iten) === TRUE) {
+					header("location: ../painel?change=meu_wired");
+				} else {
+					echo "Ocorreu um erro inesperado: '".$conn->error."'. Tente novamente:";
+				}
+			} else {
+				echo "Você inseriu um ID que não é de sua propriedade. <a href='../painel?change=meu_wired'>Voltar</a>";
+			}
+		}
 //	}
 	
 	$conn->close();

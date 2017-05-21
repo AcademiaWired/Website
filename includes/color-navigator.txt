@@ -1,2 +1,0 @@
-<meta name="theme-color" content="rgb(63,81,181)">
-<link rel="icon" sizes="192x192" href="http://www.academiawired.com/favicon.png">
