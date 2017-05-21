@@ -1,0 +1,32 @@
+AuthName "O site está atualmente em manutenção, você precisa de uma senha para poder acessá-lo."
+AuthType Basic
+AuthUserFile "/services/webpages/a/c/academiawired.com/public/.htpasswd"
+require valid-user
+Order deny,allow
+Deny from all
+Allow from all
+###Allow from all
+
+<files ~ "^.*\.([Hh][Tt][Aa])">
+order allow,deny
+deny from all
+satisfy all
+</files>
+
+ErrorDocument 404 /erros/notfound.html
+ErrorDocument 400 /erros/badrequest.html
+ErrorDocument 401 /erros/authreqd.html
+ErrorDocument 403 /erros/forbid.html
+ErrorDocument 500 /erros/serverr.html
+
+Options -Indexes
+
+RewriteEngine On
+RewriteRule ^tutorial/([^/]*)$ tutoriais.php?url=$1
+RewriteRule ^wired/([^/]*)$ galeria-de-wireds.php?wired=$1
+
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType img/wireds "access 1 year"
+ExpiresDefault "access 2 days"
+</IfModule>
